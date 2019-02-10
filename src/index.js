@@ -1,19 +1,24 @@
-import React from "react"; 
+import React from "react";
 import ReactDOM from "react-dom";
 
-const App = () => {
+class App extends React.Component {
+  // Have to define Render
+  constructor(props) {
+    super(props);
+    //super is same as java. (parent class constructor, in this case React componenet)
+    this.state = { lat: null };
+    //ONLY TIME we do direct assignment to this.state
     window.navigator.geolocation.getCurrentPosition(
-        (position)=> {
-            console.log(position); 
-        },
-        (err) => {
-            console.log(err); 
-        }
+      position => {
+          this.setState({lat: position.coords.latitude});
+      },
+      err => console.log(err)
     );
-    return <div> Hi there! </div>;
-};
+  }
 
-ReactDOM.render(
-    <App/>,
-    document.querySelector('#root')
-);
+  render() {
+    return <div>Latitude: {this.state.lat}</div>;
+  }
+}
+
+ReactDOM.render(<App />, document.querySelector("#root"));
