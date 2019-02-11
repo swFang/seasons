@@ -1,23 +1,32 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import SeasonDisplay from "./SeasonDisplay"
 
 class App extends React.Component {
   // Have to define Render
-  constructor(props) {
-    super(props);
-    //super is same as java. (parent class constructor, in this case React componenet)
-    this.state = { lat: null };
-    //ONLY TIME we do direct assignment to this.state
+  state = { lat: null, errorMessage: "" };
+
+  componentDidMount() {
     window.navigator.geolocation.getCurrentPosition(
       position => {
-          this.setState({lat: position.coords.latitude});
+        // this is a callback
+        this.setState({ lat: position.coords.latitude });
       },
-      err => console.log(err)
+      err => {
+        this.setState({ errorMessage: err.message });
+      }
     );
   }
 
   render() {
-    return <div>Latitude: {this.state.lat}</div>;
+    // called whenever stat is updated.
+    if (this.state.errorMessage && !this.state.lat) {
+      return <div>Error :{this.state.errorMessage}</div>;
+    }
+    if (!this.state.errorMessage && this.state.lat) {
+      return <SeasonDisplay lat={this.state.lat}/>
+    }
+    return <div>... loading </div>;
   }
 }
 
